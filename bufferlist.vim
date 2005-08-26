@@ -1,4 +1,4 @@
-"=== VIM BUFFER LIST SCRIPT 1.1 ================================================
+"=== VIM BUFFER LIST SCRIPT 1.2 ================================================
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
@@ -122,13 +122,22 @@ function! BufferList()
     hi def BufferSelected ctermfg=white ctermbg=black
   endif
 
-  " input the buffer list, delete the trailing newline, & fill with blank lines
   setlocal modifiable
-  put! =l:buflist
-  norm Gdd$
-  while winheight(0) > line(".")
-    put =l:fill
-  endwhile
+  if l:displayedbufs > 0
+    " input the buffer list, delete the trailing newline, & fill with blank lines
+    put! =l:buflist
+    " is there any way to NOT delete into a register? bummer...
+    "norm Gdd$
+    norm GkJ
+    while winheight(0) > line(".")
+      put =l:fill
+    endwhile
+  else
+    let l:i = 0 | while l:i < winheight(0) | let l:i = l:i + 1
+      put! =l:fill
+    endwhile
+    norm 0
+  endif
   setlocal nomodifiable
 
   " set up the keymap
