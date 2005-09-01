@@ -1,4 +1,4 @@
-"=== VIM BUFFER LIST SCRIPT 1.2 ================================================
+"=== VIM BUFFER LIST SCRIPT 1.3 ================================================
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
@@ -11,6 +11,7 @@
 "= one expects.                                                                =
 "= Buffers that are visible (in any window) are marked with '*', ones that are =
 "= Modified are marked with '+'                                                =
+"= To delete a buffer from the list (i.e. close the file) press 'd'.           =
 "=                                                                             =
 "= USAGE =======================================================================
 "= Put this file into you ~/.vim/plugin directory and set up up like this in   =
@@ -145,6 +146,7 @@ function! BufferList()
   map <silent> <buffer> q :bwipeout<CR> 
   map <silent> <buffer> j :call BufferListMove("down")<CR>
   map <silent> <buffer> k :call BufferListMove("up")<CR>
+  map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
   map <silent> <buffer> <MouseDown> :call BufferListMove("up")<CR>
   map <silent> <buffer> <MouseUp> :call BufferListMove("down")<CR>
   map <silent> <buffer> <LeftDrag> <Nop>
@@ -233,6 +235,27 @@ endfunction
 
 " loads the selected buffer
 function! LoadBuffer()
+  " get the selected buffer
+  let l:str = BufferListGetSelectedBuffer()
+  " kill the buffer list
+  bwipeout
+  " ...and switch to the buffer number
+  exec ":b " . l:str
+endfunction
+
+" deletes the selected buffer
+function! BufferListDeleteBuffer()
+  " get the selected buffer
+  let l:str = BufferListGetSelectedBuffer()
+  " kill the buffer list
+  bwipeout
+  " delete the selected buffer
+  exec ":bdelete " . l:str
+  " and reopen the list
+  call BufferList()
+endfunction
+
+function! BufferListGetSelectedBuffer()
   " this is our string containing the buffer numbers in
   " the order of the list (separated by ':')
   let l:str = b:bufnumbers
@@ -245,10 +268,6 @@ function! LoadBuffer()
   " and everything AFTER
   let l:str = strpart(l:str, 0, stridx(l:str, ':'))
 
-  " kill the buffer list
-  bwipeout
-
-  " ...and switch to the buffer number
-  exec ":b " . l:str
+  return l:str
 endfunction
 
