@@ -17,7 +17,7 @@ one expects.
 Buffers that are visible (in any window) are marked with `*`, ones that are
 modified are marked with `+`.
 
-To delete a buffer from the list (i.e. close the file) press `d`. 
+To delete a buffer from the list (i.e. close the file) press `d`.
 
 Usage
 -----
@@ -31,6 +31,7 @@ like this in your `~/.vimrc`:
 
 ### Optional
 
+    let g:BufferListShowUnnamed = 1
     let g:BufferListWidth = 25
     let g:BufferListMaxWidth = 50
     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold

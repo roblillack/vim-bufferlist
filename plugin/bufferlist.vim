@@ -20,6 +20,7 @@
 "= NEEDED:                                                                     =
 "=     map <silent> <F3> :call BufferList()<CR>                                =
 "= OPTIONAL:                                                                   =
+"=     let g:BufferListShowUnnamed = 1                                         =
 "=     let g:BufferListWidth = 25                                              =
 "=     let g:BufferListMaxWidth = 50                                           =
 "=     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold     =
@@ -37,6 +38,10 @@ endif
 
 if !exists('g:BufferListMaxWidth')
   let g:BufferListMaxWidth = 40
+endif
+
+if !exists('g:BufferListShowUnnamed')
+  let g:BufferListShowUnnamed = 0
 endif
 
 " toggled the buffer list on/off
@@ -58,6 +63,11 @@ function! BufferList()
   " iterate through the buffers
   let l:i = 0 | while l:i <= l:bufcount | let l:i = l:i + 1
     let l:bufname = bufname(l:i)
+
+    if g:BufferListShowUnnamed && !strlen(l:bufname)
+        let l:bufname = '[' . l:i . '*No Name]'
+    endif
+
     if strlen(l:bufname)
       \&& getbufvar(l:i, '&modifiable')
       \&& getbufvar(l:i, '&buflisted')
@@ -102,7 +112,7 @@ function! BufferList()
   let l:i = 0 | while l:i < l:width | let l:i = l:i + 1
     let l:fill = ' ' . l:fill
   endwhile
-  
+
   " now, create the buffer & set it up
   exec 'silent! ' . l:width . 'vne __BUFFERLIST__'
   setlocal noshowcmd
@@ -143,7 +153,7 @@ function! BufferList()
 
   " set up the keymap
   noremap <silent> <buffer> <CR> :call LoadBuffer()<CR>
-  map <silent> <buffer> q :bwipeout<CR> 
+  map <silent> <buffer> q :bwipeout<CR>
   map <silent> <buffer> j :call BufferListMove("down")<CR>
   map <silent> <buffer> k :call BufferListMove("up")<CR>
   map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
