@@ -279,10 +279,8 @@ function! BufferListDeleteHiddenBuffers()
   " kill the buffer list
   bwipeout
   " close any buffer that are loaded and not visible
-  let l:tally = 0
   for b in range(1, bufnr('$'))
     if buflisted(b) && !has_key(l:visible, b)
-      let l:tally += 1
       exe ':bdelete ' . b
     endif
   endfor
