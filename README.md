@@ -19,6 +19,8 @@ modified are marked with `+`.
 
 To delete a buffer from the list (i.e. close the file) press `d`.
 
+To delete all hidden buffers (the ones not visible in any tab) press `D`.
+
 Usage
 -----
 

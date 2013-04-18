@@ -157,6 +157,7 @@ function! BufferList()
   map <silent> <buffer> j :call BufferListMove("down")<CR>
   map <silent> <buffer> k :call BufferListMove("up")<CR>
   map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
+  map <silent> <buffer> D :call BufferListDeleteHiddenBuffers()<CR>
   map <silent> <buffer> <MouseDown> :call BufferListMove("up")<CR>
   map <silent> <buffer> <MouseUp> :call BufferListMove("down")<CR>
   map <silent> <buffer> <LeftDrag> <Nop>
@@ -261,6 +262,30 @@ function! BufferListDeleteBuffer()
   bwipeout
   " delete the selected buffer
   exec ":bdelete " . l:str
+  " and reopen the list
+  call BufferList()
+endfunction
+
+" deletes all hidden buffers
+" taken from: http://stackoverflow.com/a/3180886
+function! BufferListDeleteHiddenBuffers()
+  " figure out which buffers are visible in any tab
+  let l:visible = {}
+  for t in range(1, tabpagenr('$'))
+    for b in tabpagebuflist(t)
+      let l:visible[b] = 1
+    endfor
+  endfor
+  " kill the buffer list
+  bwipeout
+  " close any buffer that are loaded and not visible
+  let l:tally = 0
+  for b in range(1, bufnr('$'))
+    if buflisted(b) && !has_key(l:visible, b)
+      let l:tally += 1
+      exe ':bdelete ' . b
+    endif
+  endfor
   " and reopen the list
   call BufferList()
 endfunction
