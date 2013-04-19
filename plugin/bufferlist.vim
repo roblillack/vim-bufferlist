@@ -48,8 +48,13 @@ endif
 function! BufferList()
   " if we get called and the list is open --> close it
   if bufexists(bufnr("__BUFFERLIST__"))
-    exec ':' . bufnr("__BUFFERLIST__") . 'bwipeout'
-    return
+    let l:buflistnr = bufnr("__BUFFERLIST__")
+    let l:buflistwindow = bufwinnr(l:buflistnr)
+    exec ':' . l:buflistnr . 'bwipeout'
+    " if the list wasn't open, just the buffer existed, proceed with opening
+    if l:buflistwindow != -1
+        return
+    endif
   endif
 
   let l:bufcount = bufnr('$')
