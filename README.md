@@ -3,6 +3,12 @@ VIM bufferlist
 
 This is an implementation of [EMACS bufferlist](http://github.com/rockpiper/emacs-bufferlist) for [VIM](http://www.vim.org).
 
+This fork contains additional modifications by Szymon Wrozynski. Basically, now it can:
+
+* show unnamed buffers
+* delete hidden buffers
+* show tab-related buffers only
+
 About
 -----
 
@@ -21,6 +27,19 @@ To delete a buffer from the list (i.e. close the file) press `d`.
 
 To delete all hidden buffers (the ones not visible in any tab) press `D`.
 
+If you want to see buffers related with the current tab only, press `t`.<br/>
+<small>
+To switch back to all buffers view, press `t` again. This feature,
+called internally *tab friends*, can be turned off by setting
+`g:BufferListShowTabFriends = 0`. If you set `g:BufferListShowTabFriends = 2`
+tab friends are turned on and visible by default.
+</small>
+
+Tab Friends
+-----------
+
+
+
 Usage
 -----
 
@@ -34,6 +53,7 @@ like this in your `~/.vimrc`:
 ### Optional
 
     let g:BufferListShowUnnamed = 1
+    let g:BufferListShowTabFriends = 2
     let g:BufferListWidth = 25
     let g:BufferListMaxWidth = 50
     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold

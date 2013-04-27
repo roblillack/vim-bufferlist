@@ -44,6 +44,17 @@ if !exists('g:BufferListShowUnnamed')
   let g:BufferListShowUnnamed = 0
 endif
 
+if !exists('g:BufferListShowTabFriends')
+  let g:BufferListShowTabFriends = 1
+endif
+
+if g:BufferListShowTabFriends
+  au BufEnter * call BufferListAddTabFriend()
+endif
+
+let s:tabfriendstoggle = (g:BufferListShowTabFriends == 2)
+end
+
 " toggled the buffer list on/off
 function! BufferList()
   " if we get called and the list is open --> close it
@@ -53,7 +64,7 @@ function! BufferList()
     exec ':' . l:buflistnr . 'bwipeout'
     " if the list wasn't open, just the buffer existed, proceed with opening
     if l:buflistwindow != -1
-        return
+      return
     endif
   endif
 
@@ -70,7 +81,11 @@ function! BufferList()
     let l:bufname = bufname(l:i)
 
     if g:BufferListShowUnnamed && !strlen(l:bufname)
-        let l:bufname = '[' . l:i . '*No Name]'
+      let l:bufname = '[' . l:i . '*No Name]'
+    endif
+
+    if s:tabfriendstoggle && !exists('t:BufferListTabFriends[' . l:i . ']')
+      continue
     endif
 
     if strlen(l:bufname)
@@ -163,6 +178,11 @@ function! BufferList()
   map <silent> <buffer> k :call BufferListMove("up")<CR>
   map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
   map <silent> <buffer> D :call BufferListDeleteHiddenBuffers()<CR>
+
+  if g:BufferListShowTabFriends
+      map <silent> <buffer> t :call BufferListToggleTabFriends()<CR>
+  endif
+
   map <silent> <buffer> <MouseDown> :call BufferListMove("up")<CR>
   map <silent> <buffer> <MouseUp> :call BufferListMove("down")<CR>
   map <silent> <buffer> <LeftDrag> <Nop>
@@ -285,7 +305,7 @@ function! BufferListDeleteHiddenBuffers()
   bwipeout
   " close any buffer that are loaded and not visible
   for b in range(1, bufnr('$'))
-    if buflisted(b) && !has_key(l:visible, b)
+    if buflisted(b) && !has_key(l:visible, b) && !getbufvar(l:visible, '&modified')
       exe ':bdelete ' . b
     endif
   endfor
@@ -309,3 +329,20 @@ function! BufferListGetSelectedBuffer()
   return l:str
 endfunction
 
+function! BufferListAddTabFriend()
+  if !exists('t:BufferListTabFriends')
+    let t:BufferListTabFriends = {}
+  endif
+
+  let l:current = bufnr('%')
+
+  if getbufvar(l:current, '&modifiable') && getbufvar(l:current, '&buflisted') && l:current != bufnr("__BUFFERLIST__")
+    let t:BufferListTabFriends[l:current] = 1
+  endif
+endfunction
+
+function! BufferListToggleTabFriends()
+  let s:tabfriendstoggle = !s:tabfriendstoggle
+  bwipeout
+  call BufferList()
+endfunction
