@@ -9,6 +9,10 @@ This fork contains additional modifications by Szymon Wrozynski. Basically, now 
 * delete hidden buffers
 * show tab-related buffers only
 
+Please, don't forget to star the repository if you like (and use) the plugin.
+This will let me know how many users it has and then how to proceed with further
+development :).
+
 About
 -----
 
@@ -27,13 +31,13 @@ To delete a buffer from the list (i.e. close the file) press `d`.
 
 To delete all hidden buffers (the ones not visible in any tab) press `D`.
 
-If you want to see buffers related with the current tab only, press `t`.<br/>
-<small>
-To switch back to all buffers view, press `t` again. This feature,
-called internally *tab friends*, can be turned off by setting
-`g:BufferListShowTabFriends = 0`. If you set `g:BufferListShowTabFriends = 2`
-tab friends are turned on and visible by default.
-</small>
+If you want to see buffers related with the current tab only, press `t`.
+
+*Related* means buffers seen in that tab at least once. To switch back to all
+buffers view, press `t` again. This feature, called internally *tab friends*,
+can be turned off by setting `g:BufferListShowTabFriends = 0`.
+If you set `g:BufferListShowTabFriends = 2` tab friends are turned on and
+visible by default. Of course, the `t` key can toggle the view all the time.
 
 Usage
 -----
