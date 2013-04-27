@@ -53,7 +53,6 @@ if g:BufferListShowTabFriends
 endif
 
 let s:tabfriendstoggle = (g:BufferListShowTabFriends == 2)
-end
 
 " toggled the buffer list on/off
 function! BufferList()
