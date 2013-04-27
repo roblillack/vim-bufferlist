@@ -35,11 +35,6 @@ called internally *tab friends*, can be turned off by setting
 tab friends are turned on and visible by default.
 </small>
 
-Tab Friends
------------
-
-
-
 Usage
 -----
 
