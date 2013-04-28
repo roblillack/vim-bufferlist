@@ -52,7 +52,7 @@ if g:BufferListShowTabFriends
   au BufEnter * call BufferListAddTabFriend()
 endif
 
-command! -nargs=0 BufferList :call BufferList(0)
+command! -nargs=0 -range BufferList :call BufferList(0)
 
 " toggled the buffer list on/off
 function! BufferList(internal)
