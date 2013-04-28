@@ -18,7 +18,7 @@
 "= your ~/.vimrc:                                                              =
 "=                                                                             =
 "= NEEDED:                                                                     =
-"=     map <silent> <F3> :call BufferList()<CR>                                =
+"=     map <silent> <F2> :BufferList<CR>                                       =
 "= OPTIONAL:                                                                   =
 "=     let g:BufferListShowUnnamed = 1                                         =
 "=     let g:BufferListWidth = 25                                              =
@@ -52,10 +52,14 @@ if g:BufferListShowTabFriends
   au BufEnter * call BufferListAddTabFriend()
 endif
 
-let s:tabfriendstoggle = (g:BufferListShowTabFriends == 2)
+command! -nargs=0 BufferList :call BufferList(0)
 
 " toggled the buffer list on/off
-function! BufferList()
+function! BufferList(internal)
+  if !a:internal
+    let s:tabfriendstoggle = (g:BufferListShowTabFriends == 2)
+  endif
+
   " if we get called and the list is open --> close it
   if bufexists(bufnr("__BUFFERLIST__"))
     let l:buflistnr = bufnr("__BUFFERLIST__")
@@ -87,10 +91,7 @@ function! BufferList()
       continue
     endif
 
-    if strlen(l:bufname)
-      \&& getbufvar(l:i, '&modifiable')
-      \&& getbufvar(l:i, '&buflisted')
-
+    if strlen(l:bufname) && getbufvar(l:i, '&modifiable') && getbufvar(l:i, '&buflisted')
       " adapt width and/or buffer name
       if l:width < (strlen(l:bufname) + 5)
         if strlen(l:bufname) + 5 < g:BufferListMaxWidth
@@ -180,6 +181,7 @@ function! BufferList()
 
   if g:BufferListShowTabFriends
       map <silent> <buffer> t :call BufferListToggleTabFriends()<CR>
+      map <silent> <buffer> T :call BufferListDetachTabFriend()<CR>
   endif
 
   map <silent> <buffer> <MouseDown> :call BufferListMove("up")<CR>
@@ -282,12 +284,14 @@ endfunction
 function! BufferListDeleteBuffer()
   " get the selected buffer
   let l:str = BufferListGetSelectedBuffer()
-  " kill the buffer list
-  bwipeout
-  " delete the selected buffer
-  exec ":bdelete " . l:str
-  " and reopen the list
-  call BufferList()
+  if !getbufvar(str2nr(l:str), '&modified')
+    " kill the buffer list
+    bwipeout
+    " delete the selected buffer
+    exec ":bdelete " . l:str
+    " and reopen the list
+    call BufferList(1)
+  endif
 endfunction
 
 " deletes all hidden buffers
@@ -304,12 +308,12 @@ function! BufferListDeleteHiddenBuffers()
   bwipeout
   " close any buffer that are loaded and not visible
   for b in range(1, bufnr('$'))
-    if buflisted(b) && !has_key(l:visible, b) && !getbufvar(l:visible, '&modified')
+    if buflisted(b) && !has_key(l:visible, b) && !getbufvar(b, '&modified')
       exe ':bdelete ' . b
     endif
   endfor
   " and reopen the list
-  call BufferList()
+  call BufferList(1)
 endfunction
 
 function! BufferListGetSelectedBuffer()
@@ -343,5 +347,14 @@ endfunction
 function! BufferListToggleTabFriends()
   let s:tabfriendstoggle = !s:tabfriendstoggle
   bwipeout
-  call BufferList()
+  call BufferList(1)
+endfunction
+
+function! BufferListDetachTabFriend()
+  let l:str = BufferListGetSelectedBuffer()
+  if exists('t:BufferListTabFriends[' . l:str . ']') && (bufwinnr(str2nr(l:str)) == -1)
+    bwipeout
+    call remove(t:BufferListTabFriends, l:str)
+    call BufferList(1)
+  endif
 endfunction

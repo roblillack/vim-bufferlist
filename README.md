@@ -29,7 +29,7 @@ modified are marked with `+`.
 
 To delete a buffer from the list (i.e. close the file) press `d`.
 
-To delete all hidden buffers (the ones not visible in any tab) press `D`.
+To delete all hidden buffers (the ones not visible in any tab) press `D` (uppercase).
 
 If you want to see buffers related with the current tab only, press `t`.
 
@@ -39,6 +39,9 @@ can be turned off by setting `g:BufferListShowTabFriends = 0`.
 If you set `g:BufferListShowTabFriends = 2` tab friends are turned on and
 visible by default. Of course, the `t` key can toggle the view all the time.
 
+You can also detach a tab friend buffer from the current tab. We would say
+to make it a stranger ;). To perform that press `T` (uppercase).
+
 Usage
 -----
 
@@ -47,7 +50,7 @@ like this in your `~/.vimrc`:
 
 ### Needed
 
-    map <silent> <F3> :call BufferList()<CR>
+    map <silent> <F2> :BufferList<CR>
 
 ### Optional
 
