@@ -21,6 +21,7 @@
 "=     map <silent> <F2> :BufferList<CR>                                       =
 "= OPTIONAL:                                                                   =
 "=     let g:BufferListShowUnnamed = 1                                         =
+"=     let g:BufferListShowTabFriends = 2                                      =
 "=     let g:BufferListWidth = 25                                              =
 "=     let g:BufferListMaxWidth = 50                                           =
 "=     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold     =
