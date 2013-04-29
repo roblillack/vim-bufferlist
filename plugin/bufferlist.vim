@@ -42,7 +42,7 @@ if !exists('g:BufferListMaxWidth')
 endif
 
 if !exists('g:BufferListShowUnnamed')
-  let g:BufferListShowUnnamed = 0
+  let g:BufferListShowUnnamed = 2
 endif
 
 if !exists('g:BufferListShowTabFriends')
@@ -82,14 +82,16 @@ function! BufferList(internal)
 
   " iterate through the buffers
   let l:i = 0 | while l:i <= l:bufcount | let l:i = l:i + 1
+    if s:tabfriendstoggle && !exists('t:BufferListTabFriends[' . l:i . ']')
+      continue
+    endif
+
     let l:bufname = bufname(l:i)
 
     if g:BufferListShowUnnamed && !strlen(l:bufname)
-      let l:bufname = '[' . l:i . '*No Name]'
-    endif
-
-    if s:tabfriendstoggle && !exists('t:BufferListTabFriends[' . l:i . ']')
-      continue
+      if !((g:BufferListShowUnnamed == 2) && !getbufvar(l:i, '&modified')) || (bufwinnr(l:i) != -1)
+        let l:bufname = '[' . l:i . '*No Name]'
+      endif
     endif
 
     if strlen(l:bufname) && getbufvar(l:i, '&modifiable') && getbufvar(l:i, '&buflisted')
@@ -99,20 +101,20 @@ function! BufferList(internal)
           let l:width = strlen(l:bufname) + 5
         else
           let l:width = g:BufferListMaxWidth
-          let l:bufname = '...' . strpart(l:bufname, strlen(l:bufname) - g:BufferListMaxWidth + 8)
+          let l:bufname = '…' . strpart(l:bufname, strlen(l:bufname) - g:BufferListMaxWidth + 6)
         endif
       endif
 
       if bufwinnr(l:i) != -1
-        let l:bufname = l:bufname . '*'
+        let l:bufname .= '*'
       endif
       if getbufvar(l:i, '&modified')
-        let l:bufname = l:bufname . '+'
+        let l:bufname .= '+'
       endif
       " count displayed buffers
-      let l:displayedbufs = l:displayedbufs + 1
+      let l:displayedbufs += 1
       " remember buffer numbers
-      let l:bufnumbers = l:bufnumbers . l:i . ':'
+      let l:bufnumbers .= l:i . ':'
       " remember the buffer that was active BEFORE showing the list
       if l:activebuf == l:i
         let l:activebufline = l:displayedbufs
@@ -120,10 +122,10 @@ function! BufferList(internal)
       " fill the name with spaces --> gives a nice selection bar
       " use MAX width here, because the width may change inside of this 'for' loop
       while strlen(l:bufname) < g:BufferListMaxWidth
-        let l:bufname = l:bufname . ' '
+        let l:bufname .= ' '
       endwhile
       " add the name to the list
-      let l:buflist = l:buflist . '  ' .l:bufname . "\n"
+      let l:buflist .=  '  ' . l:bufname . "\n"
     endif
   endwhile
 
@@ -159,8 +161,8 @@ function! BufferList(internal)
     " input the buffer list, delete the trailing newline, & fill with blank lines
     put! =l:buflist
     " is there any way to NOT delete into a register? bummer...
-    "norm Gdd$
-    norm GkJ
+    "normal! Gdd$
+    normal! GkJ
     while winheight(0) > line(".")
       put =l:fill
     endwhile
@@ -168,7 +170,7 @@ function! BufferList(internal)
     let l:i = 0 | while l:i < winheight(0) | let l:i = l:i + 1
       put! =l:fill
     endwhile
-    norm 0
+    normal! 0
   endif
   setlocal nomodifiable
 

@@ -27,6 +27,13 @@ one expects.
 Buffers that are visible (in any window) are marked with `*`, ones that are
 modified are marked with `+`.
 
+You can adjust the displaying of unnamed buffers. If you set
+`g:BufferListShowUnnamed = 1` then unnamed buffers will be shown on the list
+any time. However, if you set this value to `2` (default), unnamed buffers will
+be displayed only if they are modified or just visible on the screen.
+
+Of course you can hide unnamed buffers permanently by `g:BufferListShowUnnamed = 0`.
+
 To delete a buffer from the list (i.e. close the file) press `d`.
 
 To delete all hidden buffers (the ones not visible in any tab) press `D` (uppercase).
