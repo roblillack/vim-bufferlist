@@ -2,6 +2,9 @@
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
+"= Modifications and further improvements                                      =
+"= (c) 2013 Szymon Wrozynski <szymon@wrozynski.com>, https://github.com/szw    =
+"=                                                                             =
 "= INFORMATION =================================================================
 "= Upon keypress this script display a nice list of buffers on the left, which =
 "= can be selected with mouse or keyboard. As soon as a buffer is selected     =
@@ -50,13 +53,13 @@ if !exists('g:BufferListShowTabFriends')
 endif
 
 if g:BufferListShowTabFriends
-  au BufEnter * call BufferListAddTabFriend()
+  au BufEnter * call <SID>BufferListAddTabFriend()
 endif
 
-command! -nargs=0 -range BufferList :call BufferList(0)
+command! -nargs=0 -range BufferList :call <SID>BufferList(0)
 
 " toggled the buffer list on/off
-function! BufferList(internal)
+function! <SID>BufferList(internal)
   if !a:internal
     let s:tabfriendstoggle = (g:BufferListShowTabFriends == 2)
   endif
@@ -81,7 +84,7 @@ function! BufferList(internal)
   let l:width = g:BufferListWidth
 
   " iterate through the buffers
-  let l:i = 0 | while l:i <= l:bufcount | let l:i = l:i + 1
+  let l:i = 0 | while l:i <= l:bufcount | let l:i += 1
     if s:tabfriendstoggle && !exists('t:BufferListTabFriends[' . l:i . ']')
       continue
     endif
@@ -132,7 +135,7 @@ function! BufferList(internal)
   " generate a variable to fill the buffer afterwards
   " (we need this for "full window" color :)
   let l:fill = "\n"
-  let l:i = 0 | while l:i < l:width | let l:i = l:i + 1
+  let l:i = 0 | while l:i < l:width | let l:i += 1
     let l:fill = ' ' . l:fill
   endwhile
 
@@ -167,7 +170,7 @@ function! BufferList(internal)
       put =l:fill
     endwhile
   else
-    let l:i = 0 | while l:i < winheight(0) | let l:i = l:i + 1
+    let l:i = 0 | while l:i < winheight(0) | let l:i += 1
       put! =l:fill
     endwhile
     normal! 0
@@ -175,24 +178,24 @@ function! BufferList(internal)
   setlocal nomodifiable
 
   " set up the keymap
-  noremap <silent> <buffer> <CR> :call LoadBuffer()<CR>
+  noremap <silent> <buffer> <CR> :call <SID>LoadBuffer()<CR>
   map <silent> <buffer> q :bwipeout<CR>
-  map <silent> <buffer> j :call BufferListMove("down")<CR>
-  map <silent> <buffer> k :call BufferListMove("up")<CR>
-  map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
-  map <silent> <buffer> D :call BufferListDeleteHiddenBuffers()<CR>
+  map <silent> <buffer> j :call <SID>BufferListMove("down")<CR>
+  map <silent> <buffer> k :call <SID>BufferListMove("up")<CR>
+  map <silent> <buffer> d :call <SID>BufferListDeleteBuffer()<CR>
+  map <silent> <buffer> D :call <SID>BufferListDeleteHiddenBuffers()<CR>
 
   if g:BufferListShowTabFriends
-      map <silent> <buffer> t :call BufferListToggleTabFriends()<CR>
-      map <silent> <buffer> T :call BufferListDetachTabFriend()<CR>
+      map <silent> <buffer> t :call <SID>BufferListToggleTabFriends()<CR>
+      map <silent> <buffer> T :call <SID>BufferListDetachTabFriend()<CR>
   endif
 
-  map <silent> <buffer> <MouseDown> :call BufferListMove("up")<CR>
-  map <silent> <buffer> <MouseUp> :call BufferListMove("down")<CR>
+  map <silent> <buffer> <MouseDown> :call <SID>BufferListMove("up")<CR>
+  map <silent> <buffer> <MouseUp> :call <SID>BufferListMove("down")<CR>
   map <silent> <buffer> <LeftDrag> <Nop>
-  map <silent> <buffer> <LeftRelease> :call BufferListMove("mouse")<CR>
-  map <silent> <buffer> <2-LeftMouse> :call BufferListMove("mouse")<CR>
-    \:call LoadBuffer()<CR>
+  map <silent> <buffer> <LeftRelease> :call <SID>BufferListMove("mouse")<CR>
+  map <silent> <buffer> <2-LeftMouse> :call <SID>BufferListMove("mouse")<CR>
+    \:call <SID>LoadBuffer()<CR>
   map <silent> <buffer> <Down> j
   map <silent> <buffer> <Up> k
   map <buffer> h <Nop>
@@ -205,8 +208,8 @@ function! BufferList(internal)
   map <buffer> A <Nop>
   map <buffer> o <Nop>
   map <buffer> O <Nop>
-  map <silent> <buffer> <Home> :call BufferListMove(1)<CR>
-  map <silent> <buffer> <End> :call BufferListMove(line("$"))<CR>
+  map <silent> <buffer> <Home> :call <SID>BufferListMove(1)<CR>
+  map <silent> <buffer> <End> :call <SID>BufferListMove(line("$"))<CR>
 
   " make the buffer count & the buffer numbers available
   " for our other functions
@@ -214,13 +217,13 @@ function! BufferList(internal)
   let b:bufcount = l:displayedbufs
 
   " go to the correct line
-  call BufferListMove(l:activebufline)
+  call <SID>BufferListMove(l:activebufline)
 endfunction
 
 " move the selection bar of the list:
 " where can be "up"/"down"/"mouse" or
 " a line number
-function! BufferListMove(where)
+function! <SID>BufferListMove(where)
   if b:bufcount < 1
     return
   endif
@@ -234,7 +237,7 @@ function! BufferListMove(where)
   " and go back to the original location for now
   if a:where == "mouse"
     let l:newpos = line(".")
-    call BufferListGoto(b:lastline)
+    call <SID>BufferListGoto(b:lastline)
   endif
 
   " exchange the first char (>) with a space
@@ -242,13 +245,13 @@ function! BufferListMove(where)
 
   " go where the user want's us to go
   if a:where == "up"
-    call BufferListGoto(line(".")-1)
+    call <SID>BufferListGoto(line(".")-1)
   elseif a:where == "down"
-    call BufferListGoto(line(".")+1)
+    call <SID>BufferListGoto(line(".")+1)
   elseif a:where == "mouse"
-    call BufferListGoto(l:newpos)
+    call <SID>BufferListGoto(l:newpos)
   else
-    call BufferListGoto(a:where)
+    call <SID>BufferListGoto(a:where)
   endif
 
   " and mark this line with a >
@@ -262,7 +265,7 @@ function! BufferListMove(where)
 endfunction
 
 " tries to set the cursor to a line of the buffer list
-function! BufferListGoto(line)
+function! <SID>BufferListGoto(line)
   if b:bufcount < 1 | return | endif
   if a:line < 1
     call cursor(1, 1)
@@ -274,9 +277,9 @@ function! BufferListGoto(line)
 endfunction
 
 " loads the selected buffer
-function! LoadBuffer()
+function! <SID>LoadBuffer()
   " get the selected buffer
-  let l:str = BufferListGetSelectedBuffer()
+  let l:str = <SID>BufferListGetSelectedBuffer()
   " kill the buffer list
   bwipeout
   " ...and switch to the buffer number
@@ -284,22 +287,22 @@ function! LoadBuffer()
 endfunction
 
 " deletes the selected buffer
-function! BufferListDeleteBuffer()
+function! <SID>BufferListDeleteBuffer()
   " get the selected buffer
-  let l:str = BufferListGetSelectedBuffer()
+  let l:str = <SID>BufferListGetSelectedBuffer()
   if !getbufvar(str2nr(l:str), '&modified')
     " kill the buffer list
     bwipeout
     " delete the selected buffer
     exec ":bdelete " . l:str
     " and reopen the list
-    call BufferList(1)
+    call <SID>BufferList(1)
   endif
 endfunction
 
 " deletes all hidden buffers
 " taken from: http://stackoverflow.com/a/3180886
-function! BufferListDeleteHiddenBuffers()
+function! <SID>BufferListDeleteHiddenBuffers()
   " figure out which buffers are visible in any tab
   let l:visible = {}
   for t in range(1, tabpagenr('$'))
@@ -316,16 +319,16 @@ function! BufferListDeleteHiddenBuffers()
     endif
   endfor
   " and reopen the list
-  call BufferList(1)
+  call <SID>BufferList(1)
 endfunction
 
-function! BufferListGetSelectedBuffer()
+function! <SID>BufferListGetSelectedBuffer()
   " this is our string containing the buffer numbers in
   " the order of the list (separated by ':')
   let l:str = b:bufnumbers
 
   " remove all numbers BEFORE the one we want
-  let l:i = 1 | while l:i < line(".") | let l:i = l:i + 1
+  let l:i = 1 | while l:i < line(".") | let l:i += 1
     let l:str = strpart(l:str, stridx(l:str, ':') + 1)
   endwhile
 
@@ -335,7 +338,7 @@ function! BufferListGetSelectedBuffer()
   return l:str
 endfunction
 
-function! BufferListAddTabFriend()
+function! <SID>BufferListAddTabFriend()
   if !exists('t:BufferListTabFriends')
     let t:BufferListTabFriends = {}
   endif
@@ -347,17 +350,17 @@ function! BufferListAddTabFriend()
   endif
 endfunction
 
-function! BufferListToggleTabFriends()
+function! <SID>BufferListToggleTabFriends()
   let s:tabfriendstoggle = !s:tabfriendstoggle
   bwipeout
-  call BufferList(1)
+  call <SID>BufferList(1)
 endfunction
 
-function! BufferListDetachTabFriend()
-  let l:str = BufferListGetSelectedBuffer()
+function! <SID>BufferListDetachTabFriend()
+  let l:str = <SID>BufferListGetSelectedBuffer()
   if exists('t:BufferListTabFriends[' . l:str . ']') && (bufwinnr(str2nr(l:str)) == -1)
     bwipeout
     call remove(t:BufferListTabFriends, l:str)
-    call BufferList(1)
+    call <SID>BufferList(1)
   endif
 endfunction
