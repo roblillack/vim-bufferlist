@@ -38,16 +38,21 @@ To delete a buffer from the list (i.e. close the file) press `d`.
 
 To delete all hidden buffers (the ones not visible in any tab) press `D` (uppercase).
 
-If you want to see buffers related with the current tab only, press `t`.
+If you want to toggle between all buffers view and those related with the current
+tab only, press `a`.
 
-*Related* means buffers seen in that tab at least once. To switch back to all
-buffers view, press `t` again. This feature, called internally *tab friends*,
-can be turned off by setting `g:BufferListShowTabFriends = 0`.
-If you set `g:BufferListShowTabFriends = 2` tab friends are turned on and
-visible by default. Of course, the `t` key can toggle the view all the time.
+*Related* means buffers seen in that tab at least once. This feature, called internally
+*tab friends*, can be turned off by setting `g:BufferListShowTabFriends = 0`.
+To see all buffers by default switch `g:BufferListShowTabFriends = 1`.
+If you set `g:BufferListShowTabFriends = 2` (default) tab friends are turned on and
+visible by default. Of course, the `a` key can toggle the view all the time.
 
 You can also detach a tab friend buffer from the current tab. We would say
-to make it a stranger ;). To perform that press `T` (uppercase).
+to make it a foreign one ;). To perform that press `t`.
+
+You can also close all detached (foreign) buffers, if you press uppercase letter `T`.
+This can be useful to clean up "orphaned" buffers, if you just have closed the tab
+you were working with.
 
 Usage
 -----
@@ -62,7 +67,7 @@ like this in your `~/.vimrc`:
 ### Optional
 
     let g:BufferListShowUnnamed = 1
-    let g:BufferListShowTabFriends = 2
+    let g:BufferListShowTabFriends = 1
     let g:BufferListWidth = 25
     let g:BufferListMaxWidth = 50
     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold
@@ -74,3 +79,4 @@ License
 Copyright(c) 2005, Robert Lillack <rob@burningsoda.com>
 Redistribution in any form with or without modification permitted.
 
+Modifications (c) 2013, Szymon Wrozynski <szymon@wrozynski.com>

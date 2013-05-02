@@ -1,4 +1,4 @@
-"=== VIM BUFFER LIST SCRIPT 1.3 ================================================
+"=== VIM BUFFER LIST SCRIPT 1.4 ================================================
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
@@ -24,7 +24,7 @@
 "=     map <silent> <F2> :BufferList<CR>                                       =
 "= OPTIONAL:                                                                   =
 "=     let g:BufferListShowUnnamed = 1                                         =
-"=     let g:BufferListShowTabFriends = 2                                      =
+"=     let g:BufferListShowTabFriends = 1                                      =
 "=     let g:BufferListWidth = 25                                              =
 "=     let g:BufferListMaxWidth = 50                                           =
 "=     hi BufferSelected term=reverse ctermfg=white ctermbg=red cterm=bold     =
@@ -49,7 +49,7 @@ if !exists('g:BufferListShowUnnamed')
 endif
 
 if !exists('g:BufferListShowTabFriends')
-  let g:BufferListShowTabFriends = 1
+  let g:BufferListShowTabFriends = 2
 endif
 
 if g:BufferListShowTabFriends
@@ -184,12 +184,6 @@ function! <SID>BufferList(internal)
   map <silent> <buffer> k :call <SID>BufferListMove("up")<CR>
   map <silent> <buffer> d :call <SID>BufferListDeleteBuffer()<CR>
   map <silent> <buffer> D :call <SID>BufferListDeleteHiddenBuffers()<CR>
-
-  if g:BufferListShowTabFriends
-      map <silent> <buffer> t :call <SID>BufferListToggleTabFriends()<CR>
-      map <silent> <buffer> T :call <SID>BufferListDetachTabFriend()<CR>
-  endif
-
   map <silent> <buffer> <MouseDown> :call <SID>BufferListMove("up")<CR>
   map <silent> <buffer> <MouseUp> :call <SID>BufferListMove("down")<CR>
   map <silent> <buffer> <LeftDrag> <Nop>
@@ -210,6 +204,12 @@ function! <SID>BufferList(internal)
   map <buffer> O <Nop>
   map <silent> <buffer> <Home> :call <SID>BufferListMove(1)<CR>
   map <silent> <buffer> <End> :call <SID>BufferListMove(line("$"))<CR>
+
+  if g:BufferListShowTabFriends
+    map <silent> <buffer> a :call <SID>BufferListToggleTabFriends()<CR>
+    map <silent> <buffer> t :call <SID>BufferListDetachTabFriend()<CR>
+    map <silent> <buffer> T :call <SID>BufferListDeleteForeignBuffers()<CR>
+  endif
 
   " make the buffer count & the buffer numbers available
   " for our other functions
@@ -300,25 +300,36 @@ function! <SID>BufferListDeleteBuffer()
   endif
 endfunction
 
+function! <SID>BufferListKeepBuffersForKeys(a:dictionary)
+  for b in range(1, bufnr('$'))
+    if buflisted(b) && !has_key(a:visible, b) && !getbufvar(b, '&modified')
+      exe ':bdelete ' . b
+    endif
+  endfor
+endfunction
+
 " deletes all hidden buffers
 " taken from: http://stackoverflow.com/a/3180886
 function! <SID>BufferListDeleteHiddenBuffers()
-  " figure out which buffers are visible in any tab
   let l:visible = {}
   for t in range(1, tabpagenr('$'))
     for b in tabpagebuflist(t)
       let l:visible[b] = 1
     endfor
   endfor
-  " kill the buffer list
   bwipeout
-  " close any buffer that are loaded and not visible
-  for b in range(1, bufnr('$'))
-    if buflisted(b) && !has_key(l:visible, b) && !getbufvar(b, '&modified')
-      exe ':bdelete ' . b
-    endif
+  call <SID>BufferListKeepBuffersForKeys(l:visible)
+  call <SID>BufferList(1)
+endfunction
+
+" deletes all foreign (not tab friend) buffers
+function! <SID>BufferListDeleteForeignBuffers()
+  let l:friends = {}
+  for t in range(1, tabpagenr('$'))
+    silent! call extend(l:friends, gettabvar(t, 'BufferListTabFriends'))
   endfor
-  " and reopen the list
+  bwipeout
+  call <SID>BufferListKeepBuffersForKeys(l:friends)
   call <SID>BufferList(1)
 endfunction
 
