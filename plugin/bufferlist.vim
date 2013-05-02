@@ -300,9 +300,9 @@ function! <SID>BufferListDeleteBuffer()
   endif
 endfunction
 
-function! <SID>BufferListKeepBuffersForKeys(a:dictionary)
+function! <SID>BufferListKeepBuffersForKeys(a:dict)
   for b in range(1, bufnr('$'))
-    if buflisted(b) && !has_key(a:visible, b) && !getbufvar(b, '&modified')
+    if buflisted(b) && !has_key(a:dict, b) && !getbufvar(b, '&modified')
       exe ':bdelete ' . b
     endif
   endfor
