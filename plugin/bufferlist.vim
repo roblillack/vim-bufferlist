@@ -369,8 +369,19 @@ endfunction
 
 function! <SID>BufferListDetachTabFriend()
   let l:str = <SID>BufferListGetSelectedBuffer()
-  if exists('t:BufferListTabFriends[' . l:str . ']') && (bufwinnr(str2nr(l:str)) == -1)
-    bwipeout
+  if exists('t:BufferListTabFriends[' . l:str . ']')
+    if bufwinnr(str2nr(l:str)) != -1
+      call <SID>BufferListMove("down")
+      if <SID>BufferListGetSelectedBuffer() == l:str
+        call <SID>BufferListMove("up")
+        if <SID>BufferListGetSelectedBuffer() == l:str
+          return
+        endif
+      endif
+      call <SID>LoadBuffer()
+    else
+      bwipeout
+    endif
     call remove(t:BufferListTabFriends, l:str)
     call <SID>BufferList(1)
   endif
