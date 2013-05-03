@@ -7,7 +7,8 @@ This fork contains additional modifications by Szymon Wrozynski. Basically, now 
 
 * show unnamed buffers
 * delete hidden buffers
-* show tab-related buffers only
+* work with tab-related buffers
+* open buffers in splits and tabs
 
 Please, don't forget to star the repository if you like (and use) the plugin.
 This will let me know how many users it has and then how to proceed with further
@@ -18,7 +19,7 @@ About
 
 Upon keypress this script display a nice list of buffers on the left, which
 can be selected with mouse or keyboard. As soon as a buffer is selected
-(Return, double click) the list disappears.
+(`Return` (or `s`, `v`, `t`), double click) the list disappears.
 
 The selection can be cancelled with the same key that is configured to open
 the list or by pressing `q`. Movement key and mouse (wheel) should work as
@@ -48,11 +49,56 @@ If you set `g:BufferListShowTabFriends = 2` (default) tab friends are turned on 
 visible by default. Of course, the `a` key can toggle the view all the time.
 
 You can also detach a tab friend buffer from the current tab. We would say
-to make it a foreign one ;). To perform that press `t`.
+to make it a foreign one ;). To perform that press `f` (a good mnemonic could be *forget*)
 
-You can also close all detached (foreign) buffers, if you press uppercase letter `T`.
+You can also close all detached (foreign) buffers, if you press uppercase letter `F`.
 This can be useful to clean up "orphaned" buffers, if you just have closed the tab
 you were working with.
+
+### Keys summary ###
+
+<table>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+<tr>
+<td><code>Return</code></td>
+<td>Opens the selected buffer</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>Opens the selected buffer in a new tab</td>
+</tr>
+<tr>
+<td><code>s</code></td>
+<td>Opens the selected buffer in a new horizontal split</td>
+</tr>
+<tr>
+<td><code>v</code></td>
+<td>Opens the selected buffer in a new vertical split</td>
+</tr>
+<tr>
+<td><code>d</code></td>
+<td>Deletes the selected buffer (closes it)</td>
+</tr>
+<tr>
+<td><code>D</code></td>
+<td>Deletes (closes) all hidden (not displayed in any tab) buffers</td>
+</tr>
+<tr>
+<td><code>f</code></td>
+<td>Forgets the current buffer (make it a *foreign* (unrelated) to the current tab)</td>
+</tr>
+<tr>
+<td><code>F</code></td>
+<td>Deletes (closes) all forgotten buffers (unrelated with any tab)</td>
+</tr>
+<tr>
+<td><code>q</code> or <code>F2</code></td>
+<td>Closes the list</td>
+</tr>
+</table>
 
 Usage
 -----

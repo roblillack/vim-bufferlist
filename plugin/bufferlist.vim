@@ -1,4 +1,4 @@
-"=== VIM BUFFER LIST SCRIPT 1.4 ================================================
+"=== VIM BUFFER LIST SCRIPT 1.5 ================================================
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
@@ -8,7 +8,7 @@
 "= INFORMATION =================================================================
 "= Upon keypress this script display a nice list of buffers on the left, which =
 "= can be selected with mouse or keyboard. As soon as a buffer is selected     =
-"= (Return, double click) the list disappears.                                 =
+"= ('Return' (or 's', 'v', 't'), double click) the list disappears.            =
 "= The selection can be cancelled with the same key that is configured to open =
 "= the list or by pressing 'q'. Movement key and mouse (wheel) should work as  =
 "= one expects.                                                                =
@@ -179,6 +179,9 @@ function! <SID>BufferList(internal)
 
   " set up the keymap
   noremap <silent> <buffer> <CR> :call <SID>LoadBuffer()<CR>
+  noremap <silent> <buffer> v :call <SID>LoadBuffer("vs")<CR>
+  noremap <silent> <buffer> s :call <SID>LoadBuffer("sp")<CR>
+  noremap <silent> <buffer> t :call <SID>LoadBuffer("tabnew")<CR>
   map <silent> <buffer> q :bwipeout<CR>
   map <silent> <buffer> j :call <SID>BufferListMove("down")<CR>
   map <silent> <buffer> k :call <SID>BufferListMove("up")<CR>
@@ -207,8 +210,8 @@ function! <SID>BufferList(internal)
 
   if g:BufferListShowTabFriends
     map <silent> <buffer> a :call <SID>BufferListToggleTabFriends()<CR>
-    map <silent> <buffer> t :call <SID>BufferListDetachTabFriend()<CR>
-    map <silent> <buffer> T :call <SID>BufferListDeleteForeignBuffers()<CR>
+    map <silent> <buffer> f :call <SID>BufferListDetachTabFriend()<CR>
+    map <silent> <buffer> F :call <SID>BufferListDeleteForeignBuffers()<CR>
   endif
 
   " make the buffer count & the buffer numbers available
@@ -277,11 +280,16 @@ function! <SID>BufferListGoto(line)
 endfunction
 
 " loads the selected buffer
-function! <SID>LoadBuffer()
+function! <SID>LoadBuffer(...)
   " get the selected buffer
   let l:str = <SID>BufferListGetSelectedBuffer()
   " kill the buffer list
   bwipeout
+
+  if !empty(a:000)
+    exec ":" . a:1
+  endif
+
   " ...and switch to the buffer number
   exec ":b " . l:str
 endfunction
