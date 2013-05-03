@@ -88,7 +88,7 @@ you were working with.
 </tr>
 <tr>
 <td><code>f</code></td>
-<td>Forgets the current buffer (make it a *foreign* (unrelated) to the current tab)</td>
+<td>Forgets the current buffer (make it a <em>foreign</em> (unrelated) to the current tab)</td>
 </tr>
 <tr>
 <td><code>F</code></td>
