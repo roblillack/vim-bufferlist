@@ -4,7 +4,7 @@ VIM bufferlist
 Deprecation warning
 -------------------
 
-Project moved here: [VIM NextBufferList](https://github.com/szw/vim-next_bufferlist). The further
+Project moved here: [Vim NextBufferList](https://github.com/szw/vim-next_bufferlist). The further
 development will continued only there.
 
 License
