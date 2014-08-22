@@ -1,18 +1,18 @@
 VIM bufferlist
 ==============
 
-This is an implementation of [EMACS bufferlist](http://github.com/rockpiper/emacs-bufferlist) for [VIM](http://www.vim.org).
+This is an implementation of [EMACS bufferlist](http://github.com/roblillack/emacs-bufferlist) for [VIM](http://www.vim.org).
 
 About
 -----
 
-Upon keypress this script display a nice list of buffers on the left, which
-can be selected with mouse or keyboard. As soon as a buffer is selected
-(Return, double click) the list disappears.
+Upon keypress this script display a nice list of buffers on the left, which can
+be selected with mouse or keyboard. As soon as a buffer is selected (Return,
+double click) the list disappears.
 
-The selection can be cancelled with the same key that is configured to open
-the list or by pressing `q`. Movement key and mouse (wheel) should work as
-one expects.
+The selection can be cancelled with the same key that is configured to open the
+list or by pressing `q`. Movement key and mouse (wheel) should work as one
+expects.
 
 Buffers that are visible (in any window) are marked with `*`, ones that are
 modified are marked with `+`.
