@@ -1,4 +1,4 @@
-"=== VIM BUFFER LIST SCRIPT 1.3 ================================================
+"=== VIM BUFFER LIST SCRIPT 1.4 ================================================
 "= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
@@ -100,9 +100,9 @@ function! BufferList()
   " (we need this for "full window" color :)
   let l:fill = "\n"
   let l:i = 0 | while l:i < l:width | let l:i = l:i + 1
-    let l:fill = ' ' . l:fill
+    let l:fill = '' . l:fill
   endwhile
-  
+
   " now, create the buffer & set it up
   exec 'silent! ' . l:width . 'vne __BUFFERLIST__'
   setlocal noshowcmd
@@ -143,7 +143,7 @@ function! BufferList()
 
   " set up the keymap
   noremap <silent> <buffer> <CR> :call LoadBuffer()<CR>
-  map <silent> <buffer> q :bwipeout<CR> 
+  map <silent> <buffer> q :bwipeout<CR>
   map <silent> <buffer> j :call BufferListMove("down")<CR>
   map <silent> <buffer> k :call BufferListMove("up")<CR>
   map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
