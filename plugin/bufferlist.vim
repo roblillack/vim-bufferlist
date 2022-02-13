@@ -1,5 +1,5 @@
-"=== VIM BUFFER LIST SCRIPT 1.3 ================================================
-"= Copyright(c) 2005, Robert Lillack <rob@lillack.de>                          =
+"=== VIM BUFFER LIST SCRIPT 1.4 ================================================
+"= Copyright(c) 2005-2022, Robert Lillack <https://roblillack.net/>            =
 "= Redistribution in any form with or without modification permitted.          =
 "=                                                                             =
 "= INFORMATION =================================================================
@@ -96,13 +96,13 @@ function! BufferList()
     endif
   endwhile
 
-  " generate a variable to fill the buffer afterwards
-  " (we need this for "full window" color :)
+  " Generate a variable full of non-breaking spaces
+  " to fill the buffer afterwards" (we need this for "full window" color :)
   let l:fill = "\n"
   let l:i = 0 | while l:i < l:width | let l:i = l:i + 1
     let l:fill = ' ' . l:fill
   endwhile
-  
+
   " now, create the buffer & set it up
   exec 'silent! ' . l:width . 'vne __BUFFERLIST__'
   setlocal noshowcmd
@@ -121,6 +121,12 @@ function! BufferList()
     syn match BufferSelected /> .*/hs=s+1
     hi def BufferNormal ctermfg=black ctermbg=white
     hi def BufferSelected ctermfg=white ctermbg=black
+  endif
+
+  " Disable highlighting spaces at the end of the line, if
+  " https://github.com/ntpeters/vim-better-whitespace is installed
+  if exists(":DisableWhitespace")
+    exec 'silent! :DisableWhitespace'
   endif
 
   setlocal modifiable
@@ -143,7 +149,7 @@ function! BufferList()
 
   " set up the keymap
   noremap <silent> <buffer> <CR> :call LoadBuffer()<CR>
-  map <silent> <buffer> q :bwipeout<CR> 
+  map <silent> <buffer> q :bwipeout<CR>
   map <silent> <buffer> j :call BufferListMove("down")<CR>
   map <silent> <buffer> k :call BufferListMove("up")<CR>
   map <silent> <buffer> d :call BufferListDeleteBuffer()<CR>
