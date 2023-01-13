@@ -113,6 +113,7 @@ function! BufferList()
   setlocal nomodifiable
   setlocal nowrap
   setlocal nonumber
+  setlocal norelativenumber
 
   " set up syntax highlighting
   if has("syntax")
